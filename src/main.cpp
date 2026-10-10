@@ -1,11 +1,12 @@
 #include "common.hpp"
+#include "core/backend/ScriptMgr.hpp"
+#include "core/backend/FiberPool.hpp"
 #include "core/filemgr/FileMgr.hpp"
 #include "core/hooking/Hooking.hpp"
 #include "core/memory/ModuleMgr.hpp"
 #include "core/renderer/Renderer.hpp"
 #include "game/frontend/GUI.hpp"
 #include "game/pointers/Pointers.hpp"
-
 
 namespace NewBase
 {
@@ -24,6 +25,7 @@ namespace NewBase
 			goto unload;
 		GUI::Init();
 		Hooking::Init();
+		ScriptMgr::Init();
 
 		while (g_Running)
 		{
