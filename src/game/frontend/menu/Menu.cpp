@@ -205,4 +205,65 @@ namespace NewBase
 	{
 		ImGui::EndChild();
 	}
+
+
+	std::vector<std::pair<std::string, uint64_t>> notifications;
+	void Menu::AddNotification(const char* format, ...)
+	{
+		char notificationText[256];
+
+		va_list args;
+		va_start(args, format);
+		vsnprintf(notificationText, sizeof(notificationText), format, args);
+
+		for (auto pair : notifications)
+		{
+			if (pair.first == std::string(notificationText))
+			{
+				pair.second = GetTickCount64();
+				return;
+			}
+		}
+
+		notifications.push_back(std::make_pair(std::string(notificationText), GetTickCount64()));
+
+		va_end(args);
+	}
+	void Menu::DrawNotifications() {
+		for (int i = 0; i < (int)notifications.size(); i++)
+		{
+			if (GetTickCount64() - notifications[i].second >= 3000)
+			{
+				notifications.erase(notifications.begin() + i);
+				continue;
+			}
+
+			ImVec2 screenSize = ImGui::GetIO().DisplaySize;
+
+			float width = ImGui::CalcTextSize(notifications[i].first.c_str()).x + 40.f;
+			float positionY = 30.f + (i * 43.f);
+			float barWidth = width - (float)(((double)(GetTickCount64() - notifications[i].second) / 3000) * width);
+
+			ImDrawList* drawList = ImGui::GetForegroundDrawList();
+			drawList->AddRectFilled(
+			    ImVec2(screenSize.x - width, positionY),
+			    ImVec2(screenSize.x, positionY + 30.f),
+			    ImColor(27, 29, 33, 255));
+			drawList->AddRectFilled(
+			    ImVec2(screenSize.x - width, positionY),
+			    ImVec2(screenSize.x - width + 5.f, positionY + 30.f),
+			    ImColor(74, 13, 159, 255));
+			drawList->AddRectFilled(
+			    ImVec2(screenSize.x - width, positionY + 30.f),
+			    ImVec2(screenSize.x - width + barWidth, positionY + 35.f),
+			    ImColor(74, 13, 159, 255));
+
+			ImGui::PushFont(Font::textFont);
+			drawList->AddText(
+			    ImVec2(screenSize.x - width + 25.f, positionY + 4.f),
+			    ImColor(255, 255, 255, 255),
+			    notifications[i].first.c_str());
+			ImGui::PopFont();
+		}
+	}
 }
