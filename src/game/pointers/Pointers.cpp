@@ -43,7 +43,7 @@ namespace NewBase
 
 		if (!scanner.Scan())
 		{
-			LOG(WARNING) << "Some socialclub patterns could not be found";
+			LOG(WARNING) << "Some patterns could not be found";
 			return false;
 		}
 
