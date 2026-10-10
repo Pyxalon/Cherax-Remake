@@ -11,14 +11,14 @@ namespace NewBase
 	public:
 		~GUI();
 
-		GUI(const GUI&)                = delete;
-		GUI(GUI&&) noexcept            = delete;
-		GUI& operator=(const GUI&)     = delete;
+		GUI(const GUI&) = delete;
+		GUI(GUI&&) noexcept = delete;
+		GUI& operator=(const GUI&) = delete;
 		GUI& operator=(GUI&&) noexcept = delete;
 
 		static void Init()
 		{
-			GetInstance();
+			GetInstance().m_IsOpen = false;
 		}
 
 		static bool IsOpen()
@@ -26,8 +26,36 @@ namespace NewBase
 			return GetInstance().m_IsOpen;
 		}
 
+		static void Toggle()
+		{
+			GetInstance().m_IsOpen ^= true;
+		}
+
+		static bool IsUsingKeyboard()
+		{
+			return ImGui::GetIO().WantTextInput;
+		}
+
+		static void RunScript()
+		{
+			GetInstance().RunScriptImpl();
+		}
+
+		static void SetOnboarding(bool state)
+		{
+			GetInstance().SetOnboardingImpl(state);
+		}
+
+		static bool IsOnboarding()
+		{
+			return GetInstance().m_Onboarding;
+		}
+
 	private:
 		void WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
+		void SetOnboardingImpl(bool state);
+		void RunScriptImpl();
 
 		static void ToggleMouse();
 		static GUI& GetInstance()
@@ -39,5 +67,6 @@ namespace NewBase
 
 	private:
 		bool m_IsOpen;
+		bool m_Onboarding;
 	};
 }
