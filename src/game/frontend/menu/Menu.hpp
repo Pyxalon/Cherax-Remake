@@ -8,9 +8,11 @@ namespace NewBase::Menu
 	extern void Init();
 	extern void SetupFonts();
 	extern void SetupStyle();
-	void Self();
-	void DrawChild(ImVec2 size, ImVec2 position, const char* text);
-	void EndChild();
+	extern void AddNotification(const char* format, ...);
+	extern void DrawNotifications();
+	extern void Self();
+	extern void DrawChild(ImVec2 size, ImVec2 position, const char* text);
+	extern void EndChild();
 	namespace Font
 	{
 		inline ImFont* titleFont;
