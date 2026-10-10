@@ -17,6 +17,13 @@ namespace NewBase
 		Renderer::AddWindowProcedureCallback([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			GUI::WndProc(hwnd, msg, wparam, lparam);
 		});
+
+		Renderer::AddRendererCallBack(
+		    [&] {
+			    Menu::DrawNotifications();
+		    },
+		    -2);
+
 		Renderer::SetSafeToRender();
 	}
 
