@@ -1,17 +1,23 @@
 #include "GUI.hpp"
-
 #include "menu/Menu.hpp"
+#include "core/backend/ScriptMgr.hpp"
 #include "core/renderer/Renderer.hpp"
+
+
 
 namespace NewBase
 {
 	GUI::GUI() :
-		m_IsOpen(false)
+	    m_IsOpen(false)
 	{
-		Renderer::AddDXCallback(Menu::Main, -1);
+		Menu::SetupFonts();
+		Menu::SetupStyle();
+		Menu::Init();
+
 		Renderer::AddWindowProcedureCallback([this](HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			GUI::WndProc(hwnd, msg, wparam, lparam);
 		});
+		Renderer::SetSafeToRender();
 	}
 
 	GUI::~GUI()
@@ -21,24 +27,60 @@ namespace NewBase
 	void GUI::ToggleMouse()
 	{
 		auto& io = ImGui::GetIO();
-		if (GUI::IsOpen())
-		{
-			io.MouseDrawCursor = true;
-			io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-		}
-		else
-		{
-			io.MouseDrawCursor = false;
-			io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
-		}
+		io.MouseDrawCursor = GUI::IsOpen() || GUI::IsOnboarding();
+		GUI::IsOpen() || GUI::IsOnboarding() 
+			? io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse :
+			  io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
 	}
 
 	void GUI::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	{
-		if (msg == WM_KEYUP && wparam == VK_INSERT)
+		if (msg == WM_KEYUP 
+			&& (wparam == VK_INSERT || (wparam == VK_OEM_5 && (GetKeyState(VK_CONTROL) & 0x8000) != 0)))
 		{
-			m_IsOpen = !m_IsOpen;
-			ToggleMouse();
+			// Persist and restore the cursor position between menu instances
+			static POINT CursorCoords{};
+			if (m_IsOpen)
+			{
+				GetCursorPos(&CursorCoords);
+			}
+			else if (CursorCoords.x + CursorCoords.y)
+			{
+				SetCursorPos(CursorCoords.x, CursorCoords.y);
+			}
+			if (!GUI::IsOnboarding())
+				Toggle();
+			ToggleMouse(); 
+		}
+	}
+	
+	void GUI::SetOnboardingImpl(bool state)
+	{
+		m_Onboarding = state;
+		ToggleMouse();
+	}
+
+	void GUI::RunScriptImpl()
+	{
+		while (g_Running)
+		{
+			if (GUI::IsOpen())
+			{
+				// if (GUI::IsUsingKeyboard() && PAD::IS_USING_KEYBOARD_AND_MOUSE(0))
+				if (GUI::IsUsingKeyboard())
+				{
+					//PAD::DISABLE_ALL_CONTROL_ACTIONS(0);
+				}
+				else
+				{
+					//static constexpr ControllerInputs controls[] = {ControllerInputs::INPUT_LOOK_LR, ControllerInputs::INPUT_LOOK_UD, ControllerInputs::INPUT_ATTACK, ControllerInputs::INPUT_AIM, ControllerInputs::INPUT_DUCK, ControllerInputs::INPUT_SELECT_WEAPON, ControllerInputs::INPUT_VEH_AIM, ControllerInputs::INPUT_VEH_ATTACK, ControllerInputs::INPUT_VEH_ATTACK2, ControllerInputs::INPUT_VEH_NEXT_RADIO, ControllerInputs::INPUT_VEH_PASSENGER_AIM, ControllerInputs::INPUT_VEH_PASSENGER_ATTACK, ControllerInputs::INPUT_VEH_SELECT_NEXT_WEAPON, ControllerInputs::INPUT_VEH_SELECT_PREV_WEAPON, ControllerInputs::INPUT_VEH_MOUSE_CONTROL_OVERRIDE, ControllerInputs::INPUT_MELEE_ATTACK_ALTERNATE, ControllerInputs::INPUT_FRONTEND_Y, ControllerInputs::INPUT_ATTACK2, ControllerInputs::INPUT_PREV_WEAPON, ControllerInputs::INPUT_NEXT_WEAPON, ControllerInputs::INPUT_VEH_DRIVE_LOOK, ControllerInputs::INPUT_VEH_DRIVE_LOOK2};
+
+					//for (const auto& control : controls)
+					//	PAD::DISABLE_CONTROL_ACTION(0, static_cast<int>(control), true);
+				}
+			}
+
+			ScriptMgr::Yield();
 		}
 	}
 }
