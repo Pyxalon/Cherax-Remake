@@ -9,13 +9,14 @@ void NewBase::Menu::Self()
             ImVec2 windowSize = ImGui::GetWindowSize();
             DrawChild(ImVec2(windowSize.x / 2, windowSize.y - 50.f), ImVec2(0.f, 40.f), "General");
 
-            if (ImGui::Button("Clear Wanted")) {
+            if (ImGui::Button("Clear Wanted"))
+			{
+				Menu::AddNotification("Test Notification");
+			}
 
-            }
-
-            if (ImGui::Button("Money")) {
-
-            }
+            if (ImGui::Button("Money"))
+			{
+			}
 
             EndChild();
 
