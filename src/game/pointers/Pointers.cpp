@@ -51,6 +51,15 @@ namespace NewBase
 			RunScriptThreads = ptr.Sub(0xA).As<PVOID>();
 		});
 
+		constexpr auto scriptProgramsPtrn = Pattern<"48 C7 84 C8 D8 00 00 00 00 00 00 00">("ScriptPrograms");
+		scanner.Add(scriptProgramsPtrn, [this](PointerCalculator ptr) {
+			ScriptPrograms = ptr.Add(0x13).Add(3).Rip().Add(0xD8).As<rage::scrProgram**>();
+		});
+
+		constexpr auto scriptThreadsPtrn = Pattern<"48 8B 05 ? ? ? ? 48 89 34 F8 48 FF C7 48 39 FB 75 97">("ScriptThreads");
+		scanner.Add(scriptThreadsPtrn, [this](PointerCalculator ptr) {
+			ScriptThreads = ptr.Add(3).Rip().As<rage::atArray<rage::scrThread*>*>();
+		});
 
 		if (!scanner.Scan())
 		{
