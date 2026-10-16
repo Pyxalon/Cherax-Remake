@@ -61,6 +61,21 @@ namespace NewBase
 			ScriptThreads = ptr.Add(3).Rip().As<rage::atArray<rage::scrThread*>*>();
 		});
 
+		constexpr auto isSessionStarted = Pattern<"0F B6 05 ? ? ? ? 0A 05 ? ? ? ? 75 2A">("IsSessionStarted");
+		scanner.Add(isSessionStarted, [this](PointerCalculator addr) {
+			IsSessionStarted = addr.Add(3).Rip().As<bool*>();
+		});
+
+		constexpr auto networkTimePtrn = Pattern<"89 05 ? ? ? ? 80 3D ? ? ? ? ? 0F 84 ? ? ? ? E9">("NetworkTime");
+		scanner.Add(networkTimePtrn, [this](PointerCalculator ptr) {
+			NetworkTime = ptr.Add(2).Rip().As<std::uint32_t*>();
+		});
+
+		constexpr auto gameTimerPtrn = Pattern<"3B 2D ? ? ? ? 76 ? 89 D9">("GameTimer");
+		scanner.Add(gameTimerPtrn, [this](PointerCalculator ptr) {
+			GameTimer = ptr.Add(2).Rip().As<std::uint32_t*>();
+		});
+
 		if (!scanner.Scan())
 		{
 			LOG(WARNING) << "Some patterns could not be found";
