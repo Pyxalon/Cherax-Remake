@@ -1,5 +1,5 @@
 #include "../Menu.hpp"
-
+#include "game/gta/Natives.hpp"
 
 void NewBase::Menu::Self()
 {
@@ -25,7 +25,7 @@ void NewBase::Menu::Self()
             ImGui::Checkbox("Godmode", &godmode);
 
             if (ImGui::Button("Suicide")) {
-
+				ENTITY::SET_ENTITY_HEALTH(PLAYER::PLAYER_PED_ID(), 0, 0, 0);
             }
 
             EndChild();
