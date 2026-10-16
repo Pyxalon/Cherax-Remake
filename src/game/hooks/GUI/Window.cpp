@@ -2,7 +2,7 @@
 #include "core/renderer/Renderer.hpp"
 #include "game/hooks/Hooks.hpp"
 
-namespace NewBase
+namespace NewBase::Hooks
 {
 	LRESULT Window::WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 	{
