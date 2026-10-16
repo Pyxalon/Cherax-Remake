@@ -23,6 +23,7 @@ namespace NewBase
 		bool* IsSessionStarted;
 		std::uint32_t* NetworkTime;
 		std::uint32_t* GameTimer;
+		std::int64_t** ScriptGlobals;
 	};
 
 	struct Pointers : PointerData
