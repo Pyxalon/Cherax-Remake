@@ -14,6 +14,8 @@ namespace NewBase
 		PVOID WndProc;
 		std::uint32_t* ScreenResX;
 		std::uint32_t* ScreenResY;
+		PVOID InitNativeTables;
+		PVOID RunScriptThreads;
 	};
 
 	struct Pointers : PointerData
