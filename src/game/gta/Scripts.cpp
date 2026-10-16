@@ -1,4 +1,7 @@
 #include "Scripts.hpp"
+#include "game/pointers/Pointers.hpp"
+#include "types/rage/tlsContext.hpp"
+
 
 namespace NewBase::Scripts
 {
