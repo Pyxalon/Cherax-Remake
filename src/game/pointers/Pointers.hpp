@@ -20,6 +20,9 @@ namespace NewBase
 		PVOID RunScriptThreads;
 		rage::scrProgram** ScriptPrograms;
 		rage::atArray<rage::scrThread*>* ScriptThreads;
+		bool* IsSessionStarted;
+		std::uint32_t* NetworkTime;
+		std::uint32_t* GameTimer;
 	};
 
 	struct Pointers : PointerData
