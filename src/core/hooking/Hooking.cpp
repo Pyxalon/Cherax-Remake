@@ -10,11 +10,12 @@ namespace NewBase
 {
 	Hooking::Hooking()
 	{
-		BaseHook::Add<Window::WndProc>(new DetourHook("WndProc", Pointers.WndProc, Window::WndProc));
+		BaseHook::Add<Hooks::Window::WndProc>(new DetourHook("WndProc", Pointers.WndProc, Hooks::Window::WndProc));
+		BaseHook::Add<Hooks::RawInput::GetRawInputData>(new DetourHook("GetRawInputData", reinterpret_cast<void*>(GetProcAddress(LoadLibraryA("user32.dll"), "GetRawInputData")), Hooks::RawInput::GetRawInputData));
 
-		auto swapchain_vft = *reinterpret_cast<void***>(*Pointers.SwapChain);
-		BaseHook::Add<SwapChain::Present>(new DetourHook("Present", swapchain_vft[SwapChain::VMTPresentIdx], SwapChain::Present));
-		BaseHook::Add<SwapChain::ResizeBuffers>(new DetourHook("ResizeBuffers", swapchain_vft[SwapChain::VMTResizeBuffersIdx], SwapChain::ResizeBuffers));
+
+		BaseHook::Add<Hooks::Script::RunScriptThreads>(new DetourHook("RunScriptThreads", Pointers.RunScriptThreads, Hooks::Script::RunScriptThreads));
+		BaseHook::Add<Hooks::Script::InitNativeTables>(new DetourHook("InitNativeTables", Pointers.InitNativeTables, Hooks::Script::InitNativeTables));
 	}
 
 	Hooking::~Hooking()
