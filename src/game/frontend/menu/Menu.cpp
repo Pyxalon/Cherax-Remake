@@ -15,8 +15,10 @@ namespace NewBase
 	{
 		SetupStyle();
 
-		Renderer::AddRendererCallBack(
+		Renderer::AddRendererCallback(
 		    [&] {
+			    if (!GUI::IsOpen())
+				    return;
 			    ImGui::SetNextWindowSize(ImVec2(740.f, 740.f));
 			    if (ImGui::Begin("BASE", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar))
 			    {
