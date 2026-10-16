@@ -1,6 +1,7 @@
 #pragma once
 #include "util/Joaat.hpp"
-#include "game/gta/data/StackSizes.hpp"
+#include "types/script/scrProgram.hpp"
+#include "types/script/scrThread.hpp"
 
 namespace NewBase::Scripts
 {
