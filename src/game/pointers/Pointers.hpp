@@ -2,7 +2,9 @@
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <windows.h>
-
+#include "types/script/scrProgram.hpp"
+#include "types/script/scrThread.hpp"
+#include "types/rage/atArray.hpp":
 
 namespace NewBase
 {
@@ -16,6 +18,8 @@ namespace NewBase
 		std::uint32_t* ScreenResY;
 		PVOID InitNativeTables;
 		PVOID RunScriptThreads;
+		rage::scrProgram** ScriptPrograms;
+		rage::atArray<rage::scrThread*>* ScriptThreads;
 	};
 
 	struct Pointers : PointerData
