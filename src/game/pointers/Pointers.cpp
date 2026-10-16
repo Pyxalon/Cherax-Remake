@@ -41,6 +41,17 @@ namespace NewBase
 			ScreenResY = ptr.Add(0x1E).Add(4).Rip().As<std::uint32_t*>();
 		});
 
+		constexpr auto populateNativesPtrn = Pattern<"EB 2A 0F 1F 40 00 48 8B 54 17 10">("InitNativeTables");
+		scanner.Add(populateNativesPtrn, [this](PointerCalculator ptr) {
+			InitNativeTables = ptr.Sub(0x2A).As<PVOID>();
+		});
+
+		constexpr auto runScriptThreadsPtrn = Pattern<"BE 40 5D C6 00">("RunScriptThreads");
+		scanner.Add(runScriptThreadsPtrn, [this](PointerCalculator ptr) {
+			RunScriptThreads = ptr.Sub(0xA).As<PVOID>();
+		});
+
+
 		if (!scanner.Scan())
 		{
 			LOG(WARNING) << "Some patterns could not be found";
